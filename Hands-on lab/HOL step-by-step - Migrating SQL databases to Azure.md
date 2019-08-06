@@ -1,4 +1,10 @@
 
+[AT] TODO add a link to the MCW and a message saying this is an abbreviated version
+[AT] Update and review this heading and license info to see how much of it can be removed
+[AT] Update the links and table of contents]
+[AT] Renumber all the execises and tasks to be consistent with the other way in the sqlworkshops repo
+
+
 ![Microsoft Cloud Workshops](https://github.com/Microsoft/MCW-Template-Cloud-Workshop/raw/master/Media/ms-cloud-workshop.png "Microsoft Cloud Workshops")
 
 <div class="MCWHeader1">
@@ -108,7 +114,7 @@ In this exercise, you will use the Microsoft Data Migration Assistant (DMA) to p
 
 > DMA helps you upgrade to a modern data platform by detecting compatibility issues that can impact database functionality in your new version of SQL Server or Azure SQL Database. DMA recommends performance and reliability improvements for your target environment and allows you to move your schema, data, and uncontained objects from your source server to your target server. To learn more, read the [Data Migration Assistant documentation](https://docs.microsoft.com/sql/dma/dma-overview?view=azuresqldb-mi-current).
 
-### Task 1: Restore the TailspinToys database on the SqlServer2008 VM
+### Task 1: Restore the TailspinToys database on the SqlServer2008 VM [AT] 8:32-8:38, I think steps 6-20 could be done as part of the ARM template.
 
 Before you begin the assessments, you need to restore a copy of the `TailspinToys` database in your SQL Server 2008 R2 instance. In this task, you will create an RDP connection to the SqlServer2008 VM and then restore the `TailspinToys` database onto the SQL Server 2008 R2 instance using a backup provided by Tailspin Toys.
 
@@ -133,6 +139,7 @@ Before you begin the assessments, you need to restore a copy of the `TailspinToy
 
     ![In the Remote Desktop Connection dialog box, a warning states that the identity of the remote computer cannot be verified, and asks if you want to continue anyway. At the bottom, the Yes button is circled.](./media/remote-desktop-connection-identity-verification-sqlserver2008.png "Remote Desktop Connection dialog")
 
+> [AT] Could Step 6 be done ahead of time?
 6. Once logged into the SqlServer2008 VM, download a [backup of the TailspinToys database](https://raw.githubusercontent.com/microsoft/Migrating-SQL-databases-to-Azure/master/Hands-on%20lab/lab-files/Database/TailspinToys.bak), and save it to the `C:\` of the VM.
 
 7. Next, open **Microsoft SQL Server Management Studio 17** by entering "sql server" into the search bar in the Windows Start menu.
@@ -228,7 +235,7 @@ Before you begin the assessments, you need to restore a copy of the `TailspinToy
 
     ![The Yes button is highlighted on the dialog asking if you are sure you want to restart the MSSQLSERVER service.](media/ssms-restart-service.png "Restart MSSQLSERVER service")
 
-### Task 2: Perform assessment for migration to Azure SQL Database
+### Task 2: Perform assessment for migration to Azure SQL Database [AT] 8:41-
 
 In this task, you will use the Microsoft Data Migration Assistant (DMA) to perform an assessment of the `TailspinToys` database against Azure SQL Database (Azure SQL DB). The assessment will provide a report about any feature parity and compatibility issues between the on-premises database and the Azure SQL DB service.
 
@@ -334,6 +341,8 @@ With one PaaS offering ruled out due to feature parity, you will now perform a s
 
 10. The database, including the cross-database references and Service broker features, can be migrated as is, providing the opportunity for TailspinToys to have a fully managed PaaS database running in Azure. Previously, their options for migrating a database using features, such as Service Broker, incompatible with Azure SQL Database, were to deploy the database to a virtual machine running in Azure (IaaS) or modify their database and applications to not use the unsupported features. The introduction of Azure SQL MI, however, provides the ability to migrate databases into a managed Azure SQL database service with near 100% compatibility, including the features that prevented them from using Azure SQL Database.
 
+[AT] Then upload to Azure Migrate 8:48-8:54
+
 ## Exercise 2: Migrate the database to SQL MI
 
 Duration: 60 minutes
@@ -342,7 +351,7 @@ In this exercise, you will use the [Azure Database Migration Service](https://az
 
 > The Business Critical service tier is designed for business applications with the highest performance and high-availability (HA) requirements. To learn more, read the [Managed Instance service tiers documentation](https://docs.microsoft.com/azure/sql-database/sql-database-managed-instance#managed-instance-service-tiers).
 
-### Task 1: Create an SMB network share on the SqlServer2008 VM
+### Task 1: Create an SMB network share on the SqlServer2008 VM [AT] 9:04-9:05
 
 In this task, you will create a new SMB network share on the SqlServer2008 VM. This will be the folder used by DMS for retrieving backups of the `TailspinToys` database during the database migration process.
 
@@ -370,7 +379,7 @@ In this task, you will create a new SMB network share on the SqlServer2008 VM. T
 
     ![The Done button is highlighted on the File Sharing dialog.](media/file-sharing-done.png "File Sharing")
 
-### Task 2: Change MSSQLSERVER service to run under sqlmiuser account
+### Task 2: Change MSSQLSERVER service to run under sqlmiuser account [AT] 9:06-9:07
 
 In this task, you will use the SQL Server Configuration Manager to update the service account used by the SQL Server (MSSQLSERVER) to the `sqlmiuser` account. This is done to ensure the SQL Server service has the appropriate permissions to write backups to the shared folder.
 
@@ -401,7 +410,7 @@ In this task, you will use the SQL Server Configuration Manager to update the se
 
     ![In the list of SQL Server Services, the SQL Server (MSSQLSERVER) service is highlighted.](media/sql-server-service.png "SQL Server Services")
 
-### Task 3: Create backup of TailspinToys database
+### Task 3: Create backup of TailspinToys database [AT]: 9:15-9:17
 
 To perform online data migrations, DMS looks for backups and logs in the SMB shared backup folder on the source database server. In this task, you will create a backup of the `TailspinToys` database using SSMS, and write it to the SMB network share you created in the previous task. The backup file needs to include a checksum, so you will add that during the backup steps.
 
@@ -448,7 +457,7 @@ To perform online data migrations, DMS looks for backups and logs in the SMB sha
 
     ![Dialog displayed a message that the database backup was completed successfully.](media/ssms-backup-complete.png "Backup complete")
 
-### Task 4: Retrieve SQL MI and SQL Server 2008 VM connection information
+### Task 4: Retrieve SQL MI and SQL Server 2008 VM connection information [AT] 9:20-9:23
 
 In this task, you will use the Azure Cloud shell to retrieve the information necessary to connect to your SQL MI and SqlServer2008 VM from DMS.
 
@@ -538,7 +547,7 @@ In this task, you will use the Azure Cloud Shell to create an Azure Active Direc
     az role assignment create --assignee http://tailspin-toys --role contributor
     ```
 
-### Task 6: Create and run an online data migration project
+### Task 6: Create and run an online data migration project [AT] 1:53-2
 
 In this task, you will create a new online data migration project in DMS for the `TailspinToys` database.
 
@@ -565,7 +574,7 @@ In this task, you will create a new online data migration project in DMS for the
 
     - **Source SQL Server instance name**: Enter the IP address of your SqlServer2008 VM that you copied into a text editor in the previous task. For example, `13.66.228.107`.
     - **Authentication type**: Select SQL Authentication.
-    - **Username**: Enter **WorkshopUser**.
+    - **Username**: Enter **WorkshopUser**. [AT] should be sqlmiuser for target
     - **Password**: Enter **Password.1234567890**.
     - **Connection properties**: Check both Encrypt connection and Trust server certificate.
 
@@ -620,7 +629,7 @@ In this task, you will create a new online data migration project in DMS for the
 
     ![In the migration monitoring window, a status of Log files uploading is highlighted.](media/dms-migration-wizard-status-log-files-uploading.png "Migration status")
 
-### Task 7: Perform migration cutover
+### Task 7: Perform migration cutover [AT] 2:09-2:16
 
 Since you performed the migration as an "online data migration," the migration wizard will continue to monitor the SMB network share for newly added log files. This allows for any updates that happen on the source database to be captured until you cut over to the SQL MI database. In this task, you will add a record to one of the database tables, backup the logs, and complete the migration of the `TailspinToys` database by cutting over to the SQL MI database.
 
@@ -694,7 +703,7 @@ Since you performed the migration as an "online data migration," the migration w
 
 15. You have now successfully migrated the `TailspinToys` database to Azure SQL Managed Instance.
 
-### Task 8: Verify database and transaction log migration
+### Task 8: Verify database and transaction log migration [AT] 2:16-2:18
 
 In this task, you will connect to the SQL MI database using SSMS, and quickly verify the migration.
 
@@ -740,7 +749,7 @@ With the `TailspinToys` database now running on SQL MI in Azure, the next step i
 
 >**Note**: SQL Managed Instance has private IP address in its own VNet, so to connect an application you need to configure access to the VNet where Managed Instance is deployed. To learn more, read [Connect your application to Azure SQL Database Managed Instance](https://docs.microsoft.com/azure/sql-database/sql-database-managed-instance-connect-app).
 
-### Task 1: Deploy the web app to Azure
+### Task 1: Deploy the web app to Azure [AT] 2:18-2:30
 
 In this task, you will create an RDP connection to the JumpBox VM, and then using Visual Studio on the JumpBox, deploy the `TailspinToysWeb` application into the App Service in Azure.
 
@@ -817,142 +826,27 @@ In this task, you will create an RDP connection to the JumpBox VM, and then usin
 
     ![A Visual Studio security warning is displayed, and the Ask me for every project in this solution checkbox is unchecked and highlighted.](media/visual-studio-security-warning.png "Visual Studio")
 
-19. Once logged into Visual Studio, right-click the `TailspinToysWeb` project in the SolutionExplorer, and then select **Publish**.
 
-    ![In the Solution Explorer, the context menu for the TailspinToysWeb project is displayed and Publish is highlighted.](media/visual-studio-project-publish.png "Visual Studio")
-
-20. In the Pick a publish target window, select **App Service**, choose **Select Existing** and then select **Publish**.
-
-    ![In the Pick a publish target dialog, App Service is selected and Select Existing is selected.](media/visual-studio-pick-publish-target.png "Visual Studio")
-
-21. In the Select Existing App Service dialog, select the subscription you are using for this hands-on lab, then expand the hands-on-lab-SUFFIX resource group folder and select the **tailspintoysUNIQUEID** App Service.
-
-    ![The tailspintoysUNIQUEID App Service is selected in the list of existing App Services.](media/visual-studio-select-existing-app-service.png "Visual Studio")
-
-22. Select **OK**, which will begin the process of publishing the application to Azure.
-
-23. When the publish completes, you will see a message in the Visual Studio Output page that the publish succeeded.
-
-    ![The Publish Succeeded message is displayed in the Visual Studio Output pane.](media/visual-studio-output-publish-succeeded.png "Visual Studio")
-
-24. Visual Studio will launch a web browser and attempt to load the site. At this point, an error will be returned because the database connection strings have not been updated to point to the SQL MI database. You will take care of this in the next task.
-
-### Task 2: Update App Service configuration
-
-In this task, you will make updates to the TailspinToys gamer info web application to enable it to connect to and utilize the SQL MI database.
-
-1. In the [Azure portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, select the **hands-on-lab-SUFFIX** resource group, and then select the **tailspintoysUNIQUEID** App Service from the list of resources.
-
-   ![The tailspintoys App Service is highlighted in the list of resource group resources.](media/rg-app-service.png "Resource group")
-
-2. On the App Service blade, select **Configuration** under Settings on the left-hand side.
-
-   ![The Configuration item is selected under Settings.](media/app-service-configuration-menu.png "Configuration")
-
-3. On the Configuration blade, locate the **Connection strings** section, and then select the Pencil (Edit) icon to the right of the `TailspinToysContext` connection string.
-
-    ![In the Connection string section, the pencil icon is highlighted to the right of the TailspinToysContext connection string.](media/app-service-configuration-connection-strings.png "Connection Strings")
-
-4. The value of the connection string should look like:
-
-    ```sql
-    Server=tcp:your-sqlmi-host-fqdn-value,1433;Database=TailspinToys;User ID=sqlmiuser;Password=Password.1234567890;Trusted_Connection=False;Encrypt=True;TrustServerCertificate=True;
-    ```
-
-5. In the Add/Edit connection string dialog, replace `your-sqlmi-host-fqdn-value` with the fully qualified domain name for your SQL MI that you copied to a text editor earlier from the Azure Cloud Shell.
-
-    ![The your-sqlmi-host-fqdn-value string is highlighted in the connection string.](media/app-service-configuration-edit-conn-string.png "Edit Connection String")
-
-6. The updated value should look similar to the following screenshot.
-
-    ![The updated connection string is displayed, with the fully qualified domain name of SQL MI highlighted within the string.](media/app-service-configuration-edit-conn-string-value.png "Connection string value")
-
-7. Select **Update**.
-
-8. Repeat steps 3 - 7, this time for the `TailspinToysReadOnlyContext` connection string.
-
-9. Select **Save** at the top of the Configuration blade.
-
-   ![The save button on the Configuration blade is highlighted.](media/app-service-configuration-save.png "Save")
-
-10. Select **Overview** to the left of the Configuration blade to return to the overview blade of your App Service.
-
-    ![Overview is highlighted on the left-hand menu for App Service](media/app-service-overview-menu-item.png "Overview menu item")
-
-11. At this point, selecting the **URL** for the App Service on the Overview blade will still result in an error being return. This is because SQL Managed Instance has a private IP address in its own VNet. To connect an application, you need to configure access to the VNet where Managed Instance is deployed, which you will do in the next excise.
-
-## Exercise 4: Integrate App Service with the virtual network
-
-Duration: 15 minutes
-
-In this exercise, you will Integrate your App Service with the virtual network that was created during the Before the hands-on lab exercises. The ARM template created a Gateway subnet on the VNet, as well as a Virtual Network Gateway. Both of these resources are required to integrate App Service, and connect to SQL MI.
-
-### Task 1: Set point-to-site addresses
-
-In this task, you will configure the client address pool. This is a range of private IP addresses that you will specify below. Clients that connect over a Point-to-Site VPN dynamically receive an IP address from this range. You will use a private IP address range that does not overlap with the VNet you will connect to.
-
-1. Navigate to the **hands-on-lab-SUFFIX-vnet-gateway** Virtual network gateway in the [Azure portal](https://portal.azure.com) by selecting it from the list of resources in the hands-on-lab-SUFFIX resource group.
-
-    ![The Virtual network gateway resource is highlighted in the list of resources.](media/resource-group-vnet-gateway.png "Resources")
-
-2. On the virtual network gateway blade, select **Point-to-site configuration** under Settings in the left-hand menu, and then select **Configure now**.
-
-    ![Point-to-site configuration is highlighted and selected in the left-hand menu. On the Point-to-site configuration blade, Configure now is highlighted.](media/virtual-network-gateway-configure-point-to-site.png "Virtual network gateway")
-
-3. On the **Point-to-site** configuration page, set the following configuration:
-
-    - **Address pool**: Add a private IP address range that you want to use. The address space must be in one of the following address blocks, but should not overlap the address space used by the VNet.
-      - `10.0.0.0/8` - This means an IP address range from 10.0.0.0 to 10.255.255.255
-      - `172.16.0.0/12` - This means an IP address range from 172.16.0.0 to 172.31.255.255
-      - `192.168.0.0/16` - This means an IP address range from 192.168.0.0 to 192.168.255.255
-    - **Tunnel type**: Select **SSTP (SSL)**.
-    - **Authentication type**: Choose **Azure certificate**.
-
-    ![The values specified above are entered into the Point-to-site configuration form.](media/virtual-network-gateway-point-to-site-configuration.png "Virtual network gateway")
-
-4. Select **Save** to validate and save the settings. It will take 1 - 2 minutes for the save to finish.
-
-### Task 2: Configure VNet integration with App Services
-
-In this task, you will add the networking configuration to your App Service to enable communication with resources in the VNet.
-
-1. In the [Azure portal](https://portal.azure.com), select **Resource groups** from the left-hand menu, select the **hands-on-lab-SUFFIX** resource group, and then select the **tailspintoysUNIQUEID** App Service from the list of resources.
-
-   ![The tailspintoys App Service is highlighted in the list of resource group resources.](media/rg-app-service.png "Resource group")
-
-2. On the App Service blade, select **Networking** from the left-hand menu and then select **Click here to configure** under **VNet Integration**.
-
-    ![On the App Service blade, Networking is selected in the left-hand menu and Click here to configure is highlighted under VNet Integration.](media/app-service-networking.png "App Service")
-
-3. Select **Add VNet** on the VNet Configuration blade.
-
-    ![Add VNet is highlighted on the VNet Configuration blade.](media/app-service-vnet-configuration.png "App Service")
-
-4. Select the **hands-on-lab-SUFFIX-vnet** in the Virtual Network dialog.
-
-    ![The hands-on-lab-SUFFIX-vnet** is highlighted.](media/app-service-vnet-configuration-add-vnet.png "App Service")
-
-5. Within a few minutes, the VNet will be added and your App Service will be restarted to apply the changes. Select **Refresh** to see the details. You should see that the certificate status is Certificates in sync.
-
-    ![The details of the VNet Configuration are displayed. The Certificate Status, Certificates in sync, is highlighted.](media/app-service-vnet-details.png "App Service")
-
-    > **Note**: In you receive a message adding the Virtual Network to Web App failed, select **Disconnect** on the VNet Configuration blade, and repeat steps 3 - 5 above.
-
-### Task 3: Open the web application
-
-In this task, you will verify your web application now loads, and you can see the home page of the web app.
-
-1. Select **Overview** in the left-hand menu of your App Service, and select the **URL** of your App service to launch the website. This will open the URL in a browser window.
-
-    ![The App service URL is highlighted.](media/app-service-url.png "App service URL")
-
-2. Verify that the web site and data is loaded correctly. The page should look similar to the following:
-
-    ![Screenshot of the TailspinToys Operations Web App.](media/tailspin-toys-web-app.png "TailspinToys Web")
-
-> That's it. You were able to successfully connect your application to the new SQL MI database.
-
-## Exercise 5: Improve database security posture with Advanced Data Security
+[AT] New altered instructions from here:
+19. Open appsettings.json and enter your SQL 2008 VM information in the Connection strings section
+```
+"ConnectionStrings": {
+    "TailspinToysContext": "Server=tcp:<your-sql-2008-vm-ip>,1433;Database=TailspinToys;User ID=Workshopuser;Password=Password.1234567890;Trusted_Connection=False;Encrypt=True;TrustServerCertificate=True;",
+    "TailspinToysReadOnlyContext": "Server=tcp:<your-sql-2008-vm-ip>,1433;Database=TailspinToys;User ID=WorkshopUser;Password=Password.1234567890;Trusted_Connection=False;Encrypt=True;TrustServerCertificate=True;"
+  }
+
+```
+20. Save the file (CTRL+S)
+21. Run the application (IIS Express button)
+22. You should be able to run the app locally and view the site and it's data which is accessing the on-prem data
+22. Stop the application
+23. Now, in order to have the app run with the MI, update appsettings.json by replace the SQL 2008 VM IP with the fully qualified domain name for your MI.
+24. Run the application (IIS Express button)
+
+> Note: If you want to complete an extension of this lab where you deploy the web app to Azure and integrate the App Service within the virtual network using point-to-site and VNet integration, see exercises 3 and 4 in the non-abbreviated lab [**TODO link needed**]
+
+
+## Exercise 5: Improve database security posture with Advanced Data Security [AT] 8:18-8:23
 
 Duration: 30 minutes
 
@@ -1032,7 +926,7 @@ In this task, you will look at the [SQL Data Discovery and Classification](https
 
     ![The View Report button is highlighted on the toolbar.](media/ads-data-discovery-and-classification-overview-report.png "View report")
 
-### Task 3: Review Advanced Data Security Vulnerability Assessment
+### Task 3: Review Advanced Data Security Vulnerability Assessment [AT] 8:23-8:26 - then needed to download ssms 18. 8:59-9:03
 
 In this task, you will review an assessment report generated by ADS for the `TailspinToys` database and take action to remediate one of the findings in the `TailspinToys` database. The [SQL Vulnerability Assessment service](https://docs.microsoft.com/azure/sql-database/sql-vulnerability-assessment) is a service that provides visibility into your security state, and includes actionable steps to resolve security issues, and enhance your database security.
 
@@ -1124,122 +1018,7 @@ In this exercise, you will enable [Dynamic Data Masking](https://docs.microsoft.
 
 > For example, a service representative at a call center may identify callers by several digits of their credit card number, but those data items should not be fully exposed to the service representative. A masking rule can be defined that masks all but the last four digits of any credit card number in the result set of any query. As another example, an appropriate data mask can be defined to protect personally identifiable information (PII) data, so that a developer can query production environments for troubleshooting purposes without violating compliance regulations.
 
-### Task 1: Enable DDM on credit card numbers
-
-When inspecting the data in the `TailspinToys` database using the ADS Data Discovery & Classification tool, you set the Sensitivity label for credit card numbers to Highly Confidential. In this task, you will take another step to product this information by enabling DDM on the `CardNumber` field in the `CreditCard` table. This will prevent queries against that table from returning the full credit card number.
-
-1. On your JumpBox VM, return to the SQL Server Management Studio (SSMS) window you opened previously.
-
-2. Expand **Tables** under the **TailspinToys** database and locate the `Sales.CreditCard` table. Expand the table columns and observe that there is a column named `CardNumber`. Right-click the table, and choose **Select Top 1000 Rows** from the context menu.
-
-   ![The Select Top 1000 Rows item is highlighted in the context menu for the Sales.CreditCard table.](media/ssms-sql-mi-credit-card-table-select.png "Select Top 1000 Rows")
-
-3. In the query window that opens, review the Results, including the `CardNumber` field. Notice it is displayed in plain text, making the data available to anyone with access to query the database.
-
-   ![Plain text credit card numbers are highlighted in the query results.](media/ssms-sql-mi-credit-card-table-select-results.png "Results")
-
-4. To be able to test the mask being applied to the `CardNumber` field, you will first create a user in the database that will be used for testing the masked field. In SSMS, select **New Query** and paste the following SQL script into the new query window:
-
-   ```sql
-   USE [TailspinToys];
-   GO
-
-   CREATE USER DDMUser WITHOUT LOGIN;
-   GRANT SELECT ON [Sales].[CreditCard] TO DDMUser;
-   ```
-
-   > The SQL script above creates a new user in the database named `DDMUser`, and grants that user `SELECT` rights on the `Sales.CreditCard` table.
-
-5. Select **Execute** from the SSMS toolbar to run the query. You will get a message that the commands completed successfully in the Messages pane.
-
-6. With the new user created, run a quick query to observe the results. Select **New Query** again, and paste the following into the new query window.
-
-   ```sql
-   USE [TailspinToys];
-   GO
-
-   EXECUTE AS USER = 'DDMUser';
-   SELECT * FROM [Sales].[CreditCard];
-   REVERT;
-   ```
-
-7. Select **Execute** from the toolbar, and examine the Results pane. Notice the credit card number, as above, is visible in clear text.
-
-   ![The credit card number is unmasked in the query results.](media/ssms-sql-mi-ddm-results-unmasked.png "Query results")
-
-8. You will now apply DDM on the `CardNumber` field to prevent it from being viewed in query results. Select **New Query** from the SSMS toolbar and paste the following query into the query window to apply a mask to the `CardNumber` field, and select **Execute**.
-
-   ```sql
-   USE [TailspinToys];
-   GO
-
-   ALTER TABLE [Sales].[CreditCard]
-   ALTER COLUMN [CardNumber] NVARCHAR(25) MASKED WITH (FUNCTION = 'partial(0,"xxx-xxx-xxx-",4)')
-   ```
-
-9. Run the `SELECT` query you opened in step 6 above again, and observe the results. Specifically inspect the output in the `CardNumber` field. For reference the query is below.
-
-    ```sql
-    USE [TailspinToys];
-    GO
-
-    EXECUTE AS USER = 'DDMUser';
-    SELECT * FROM [Sales].[CreditCard];
-    REVERT;
-    ```
-
-    ![The credit card number is masked in the query results.](media/ssms-sql-mi-ddm-results-masked.png "Query results")
-
-    > The `CardNumber` is now displayed using the mask applied to it, so only the last four digits of the card number are visible. Dynamic Data Masking is a powerful feature that enables you to prevent unauthorized users from viewing sensitive or restricted information. It’s a policy-based security feature that hides the sensitive data in the result set of a query over designated database fields, while the data in the database is not changed.
-
-### Task 2: Apply DDM to email addresses
-
-From the findings of the Data Discovery & Classification report in ADS, you saw that email addresses are labeled Confidential. In this task, you will use one of the built-in functions for making email addresses using DDM to help protect this information.
-
-1. For this, you will target the `LoginEmail` field in the `[dbo].[Gamer]` table. Open a new query window and execute the following script:
-
-    ```sql
-    USE [TailspinToys];
-    GO
-
-    SELECT TOP(100) * FROM [dbo].[Gamer]
-    ```
-
-    ![In the query results, full email addresses are visible.](media/ddm-select-gamer-results.png "Query results")
-
-2. Now, as you did above, you will grant the `DDMUser` you created above `SELECT` rights on the [dbo].[Gamer]. In a new query window and enter the following script, and then select **Execute**:
-
-    ```sql
-   USE [TailspinToys];
-   GO
-
-   GRANT SELECT ON [dbo].[Gamer] TO DDMUser;
-   ```
-
-3. Next, apply DDM on the `LoginEmail` field to prevent it from being viewed in full in query results. Select **New Query** from the SSMS toolbar and paste the following query into the query window to apply a mask to the `LoginEmail` field, and then select **Execute**.
-
-   ```sql
-   USE [TailspinToys];
-   GO
-
-   ALTER TABLE [dbo].[Gamer]
-   ALTER COLUMN [LoginEmail] NVARCHAR(250) MASKED WITH (FUNCTION = 'Email()');
-   ```
-
-   > **Note**: Observe the use of the built-in `Email()` masking function above. This is one of several pre-defined masks available in SQL Server databases.
-
-4. Run the `SELECT` query below, and observe the results. Specifically inspect the output in the `LoginEmail` field. For reference the query is below.
-
-    ```sql
-    USE [TailspinToys];
-    GO
-
-    EXECUTE AS USER = 'DDMUser';
-    SELECT * FROM [dbo].[Gamer];
-    REVERT;
-    ```
-
-    ![The email addresses are now masked in the query results.](media/ddm-select-gamer-results-masked.png "Query results")
+> [AT] For more you can check out this extra lab for tailspin toys around dynamic data masking. TODO add link and more explanation!
 
 ## Exercise 7: Use online secondary for read-only queries
 
@@ -1270,6 +1049,8 @@ In this task, you will open a web report using the web application you deployed 
    > Note the `READ_WRITE` string on the page. This is the output from reading the `Updateability` property associated with the `ApplicationIntent` option on the target database. This can be retrieved using the SQL query `SELECT DATABASEPROPERTYEX(DB_NAME(), "Updateability")`.
 
 ### Task 2: Update read only connection string
+
+[AT] This is a 5 minute lab but requires updating the default application setting to be set to ReadWrite instead of ReadOnly and then here they run it locally and then change to ReadOnly to see update. May want to add some explanation as well for what is happening.
 
 In this task, you will enable Read Scale-Out for the `TailspinToys`database, using the `ApplicationIntent` option in the connection string. This option dictates whether the connection is routed to the write replica or to a read-only replica. Specifically, if the `ApplicationIntent` value is `ReadWrite` (the default value), the connection will be directed to the database’s read-write replica. If the `ApplicationIntent` value is `ReadOnly`, the connection is routed to a read-only replica.
 
